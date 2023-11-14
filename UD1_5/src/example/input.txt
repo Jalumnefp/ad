@@ -1,0 +1,4 @@
+Esto es un
+fichero de texto
+plano cuya existencia
+se resume en ser leido.

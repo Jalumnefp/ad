@@ -1,0 +1,43 @@
+[
+    {
+        "nombre_jugador": "sergio",
+        "personaje": "inventor",
+        "herramientas": ["fórmula","microscopio","microorganismo"],
+        "vida": 86
+    },
+    {
+        "nombre_jugador": "mara",
+        "personaje": "guerrera",
+        "herramientas": ["escudo","ballesta","unicornio"],
+        "vida": 80
+    },
+    {
+        "nombre_jugador": "miquel",
+        "personaje": "rastreador",
+        "herramientas": ["lupa","escoba","dragón"],
+        "vida": 85
+    },
+    {
+        "nombre_jugador": "claudia",
+        "personaje": "sabio",
+        "herramientas": ["varita","hechizo","libro","gata"],
+        "vida": 110
+    },
+    {
+        "nombre_jugador": "carles",
+        "personaje": "inventor",
+        "herramientas": ["varita","conjuro","sombrero","búho"],
+        "vida": 95
+    },
+    {
+        "nombre_jugador": "alexia",
+        "personaje": "exploradora",
+        "herramientas": ["látigo","semillas","hacha","yegua"],
+        "vida": 100
+    },
+    {
+        "nombre_jugador": "Json",
+        "personaje": "asesino",
+        "herramientas": ["motosierra", "machete", "máscara"]
+    }
+]

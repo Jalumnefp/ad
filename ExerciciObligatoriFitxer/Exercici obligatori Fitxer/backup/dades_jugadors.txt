@@ -1,0 +1,6 @@
+sergio-inventor-fórmula,microscopio,microorganismo-86
+mara-guerrera-escudo,ballesta,unicornio-80
+miquel-rastreador-lupa,escoba,dragón-85
+claudia-maga-varita,hechizo,libro,gata-110
+carles-sabio-varita,conjuro,sombrero,búho-95
+alexia-exploradora-látigo,semillas,hacha,yegua-100
