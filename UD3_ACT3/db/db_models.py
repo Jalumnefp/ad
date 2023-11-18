@@ -3,20 +3,20 @@ from sqlalchemy import ForeignKey, String, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
-
 class Base(DeclarativeBase):
     pass
 
 
 class Clinic(Base):
     __tablename__ = "clinic"
+    __fields__ = ['addr', 'name']
 
     id: Mapped[int] = mapped_column(primary_key=True)
     addr: Mapped[Optional[str]]
     name: Mapped[str] = mapped_column(String(50))
 
     pets: Mapped[List["Pet"]] = relationship(
-        back_populates="id_clin", 
+        back_populates="clinic", 
         cascade="all, delete-orphan"
     )
 
@@ -26,13 +26,14 @@ class Clinic(Base):
 
 class Owner(Base):
     __tablename__ = "owner"
+    __fields__ = ['email', 'name']
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[Optional[str]]
     name: Mapped[str] = mapped_column(String(50))
 
     pets: Mapped[List["Pet"]] = relationship(
-        back_populates="id_ownr", 
+        back_populates="owner", 
         cascade="all, delete-orphan"
     )
     
@@ -42,13 +43,14 @@ class Owner(Base):
 
 class Pet(Base):
     __tablename__ = "pet"
+    __fields__ = ['breed', 'descr', 'name', 'clinic_id', 'owner_id']
 
     id: Mapped[int] = mapped_column(primary_key=True)
     breed: Mapped[str] = mapped_column(String(50))
     descr: Mapped[Optional[str]]
     name: Mapped[str] = mapped_column(String(50))
-    id_clin: Mapped[int] = mapped_column(ForeignKey("clinic.id"))
-    id_ownr: Mapped[int] = mapped_column(ForeignKey("owner.id"))
+    clinic_id: Mapped[int] = mapped_column(ForeignKey("clinic.id"))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("owner.id"))
 
     clinic: Mapped["Clinic"] = relationship(
         back_populates="pets"
@@ -58,5 +60,5 @@ class Pet(Base):
     )
 
     def __repr__(self) -> str:
-        return F"Pet(id={self.id!r}, addr={self.breed!r}, descr={self.descr!r}, name={self.name!r}, id_clin={self.id_clin!r}, id_ownr={self.id_ownr!r})"
+        return F"Pet(id={self.id!r}, addr={self.breed!r}, descr={self.descr!r}, name={self.name!r}, id_clin={self.clinic_id!r}, id_ownr={self.owner_id!r})"
 
