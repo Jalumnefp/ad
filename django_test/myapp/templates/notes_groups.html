@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+
+
+<div>
+    <h1>Notes Groups</h1>
+
+    <ul class="list-group">
+        {% for notes_group in notes_groups_list %}
+        <li class="list-group-item">
+            <a href="/myapp/group/{{ notes_group.id }}"><h4>{{ notes_group.title }}</h4></a>
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+
+{% endblock %}

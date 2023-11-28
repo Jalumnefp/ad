@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="m-5">
+    <h1>{{ notes_group.title }}</h1>
+
+    <p>Description: {{ notes_group.description }}</p>
+
+    <ul class="list-group">
+        {% for notes in notes_list %}
+        <li class="list-group-item">
+            <h4>{{ notes.title }}</h4>
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+
+{% endblock %}
