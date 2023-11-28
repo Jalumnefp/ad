@@ -5,16 +5,21 @@
 
 
 
-<div>
-    <h1>Notes Groups</h1>
+<div class="container">
+    <h1 class="text-center">Notes Groups</h1>
 
-    <ul class="list-group">
+    <div class="d-flex flex-wrap">
         {% for notes_group in notes_groups_list %}
-        <li class="list-group-item">
-            <a href="/myapp/group/{{ notes_group.id }}"><h4>{{ notes_group.title }}</h4></a>
-        </li>
+        <div class="card m-5" style="width: 18em;">
+            <div class="card-header">
+                <a href="/myapp/group/{{ notes_group.id }}">{{ notes_group.title }}</a>
+            </div>
+            <p class="card-body">
+                {{ notes_group.description }}
+            </p>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 
 </div>
 

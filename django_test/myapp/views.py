@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.views import View
+from django.http import HttpRequest
 from .models import *
 
 # Create your views here.
@@ -31,3 +32,8 @@ class NotesView(View):
             'notes_group': notesGroup,
             'notes_list': notes
         })
+        
+    def post(self, request: HttpRequest, group_id):
+        print(group_id, request)
+        print(request.POST.items)
+        return render(request, 'notes.html')
