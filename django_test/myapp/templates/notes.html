@@ -11,11 +11,9 @@
         {% for notes in notes_list %}
         <li id="{{ notes.id }}" class="list-group-item">
             <h4><a class="text-decoration-none" href="#">{{ notes.title }}</a></h4>
-            <form method="post">
+            <form action={% url 'note_update' notes.id %} method="post">
                 {% csrf_token %}
-                <textarea name="card_content" id="resr2">
-                    {{ notes.content }}
-                </textarea>
+                <textarea name="card_content">{{ notes.content }}</textarea>
                 <button></button>
             </form>
             
@@ -26,13 +24,7 @@
 </div>
 
 <script>
-    function appendOnClick(card_id) {
-        const card = document.getElementById(card_id)
-        const content = document.createElement('textarea')
-        content.className = 'list-group-item'
-        content.innerHTML = 'asdfasdf'
-        card.appendChild(content)
-    }
+    
 </script>
 
 {% endblock %}

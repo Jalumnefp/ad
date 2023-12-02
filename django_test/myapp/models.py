@@ -1,5 +1,6 @@
+from django.contrib.auth.models import User
 from django.db import models
-from datetime import datetime
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -7,6 +8,7 @@ from datetime import datetime
 class NotesGroup(models.Model):
     title = models.CharField(null=False, max_length=50)
     description = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
         return self.title
@@ -14,7 +16,7 @@ class NotesGroup(models.Model):
 
 class Note(models.Model):
     title = models.CharField(null=False, max_length=50)
-    date = models.DateField(default=datetime.now())
+    date = models.DateField(default=now())
     content = models.TextField()
     notes_group = models.ForeignKey(NotesGroup, on_delete=models.CASCADE)
 

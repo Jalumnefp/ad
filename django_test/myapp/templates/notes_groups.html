@@ -10,14 +10,16 @@
 
     <div class="d-flex flex-wrap">
         {% for notes_group in notes_groups_list %}
-        <div class="card m-5" style="width: 18em;">
-            <div class="card-header">
-                <a href="/myapp/group/{{ notes_group.id }}">{{ notes_group.title }}</a>
-            </div>
-            <p class="card-body">
-                {{ notes_group.description }}
-            </p>
-        </div>
+            {% if notes_group.user == user %}
+                <div class="card m-5" style="width: 18em;">
+                    <div class="card-header">
+                        <a href="/myapp/group/{{ notes_group.id }}">{{ notes_group.title }}</a>
+                    </div>
+                    <p class="card-body">
+                        {{ notes_group.description }}
+                    </p>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 
