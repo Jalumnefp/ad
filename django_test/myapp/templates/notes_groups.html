@@ -2,26 +2,59 @@
 {% block content %}
 
 
-
-
-
 <div class="container">
     <h1 class="text-center">Notes Groups</h1>
+    <form action={% url 'notes_groups_create' user.id %} method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-success">+</button>
+    </form>
 
-    <div class="d-flex flex-wrap">
+    <!--  href="/myapp/group/{{ notes_group.id }}" -->
+
+    <ul class="list-group">
         {% for notes_group in notes_groups_list %}
             {% if notes_group.user == user %}
-                <div class="card m-5" style="width: 18em;">
-                    <div class="card-header">
-                        <a href="/myapp/group/{{ notes_group.id }}">{{ notes_group.title }}</a>
+            <a aria-disabled="true" class="text-decoration-none" href="/myapp/group/{{ notes_group.id }}"> 
+                <li class="list-group-item m-3">
+                    <h4>{{ notes_group.title }}</h4>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_group_modal"></button>
+
+                    <div class="modal fade" id="delete_group_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Advertencia!</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Está a punto de eliminar permanentemente el grupo de notas <strong>{{ notes_group.title }}</strong>!
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <form action={% url 'notes_groups_delete' notes_group.id %} method="post">
+                                        {% csrf_token %}
+                                        
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="card-body">
-                        {{ notes_group.description }}
-                    </p>
-                </div>
+
+                    
+                    <button onclick="" class="btn btn-outline-warning">E</button>
+
+
+                    <hr>
+                    <form id="{{ notes_group.id }}" action={% url 'notes_groups_update' notes_group.id %} method="post">
+                        {% csrf_token %}
+                        <textarea style="resize: none;" name="description" onchange="document.getElementById({{ notes_group.id }}).submit()">{{ notes_group.description }}</textarea>
+                    </form>
+                </li>
+            </a>
             {% endif %}
         {% endfor %}
-    </div>
+    </ul>
 
 </div>
 

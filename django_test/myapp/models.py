@@ -4,7 +4,6 @@ from django.utils.timezone import now
 
 # Create your models here.
 
-
 class NotesGroup(models.Model):
     title = models.CharField(null=False, max_length=50)
     description = models.TextField()

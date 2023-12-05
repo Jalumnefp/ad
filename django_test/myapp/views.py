@@ -12,17 +12,19 @@ from .models import *
 
 # Create your views here.
 
-
+# ROOT
 @require_GET
 def root(request):
     return redirect('/myapp')
+# END ROOT
 
-
+# HOME
 @require_GET
 def home(request):
     return render(request, 'home.html')
+# END HOME
 
-
+# LOGIN
 class LoginView(View):
     
     @method_decorator(require_GET)
@@ -42,8 +44,7 @@ class LoginView(View):
             return render(request, 'login.html', {
                 'credentials_error': 'Credenciales erroneas'
             })
-    
-    
+      
 class RegisterView(View):
     
     @method_decorator(require_GET)
@@ -56,7 +57,7 @@ class RegisterView(View):
         return render(request, 'login.html')
     
     @classmethod
-    def _add_user(request):
+    def _add_user(self, request):
         User.objects.create_user(
             username = request.POST['username'],
             first_name = request.POST['firstname'],
@@ -70,29 +71,58 @@ class RegisterView(View):
 def close_session(request):
     logout(request)
     return redirect('home')
+
+# END LOGIN 
     
 
+# NOTE_GROUPS
+@login_required
 @require_GET
 def notesGroups(request: HttpRequest):
     notesGroups = NotesGroup.objects.all()
     return render(request, 'notes_groups.html', {"notes_groups_list": notesGroups})
 
+@login_required
+@require_POST
+def createGroup(request: HttpRequest, user_id):
+    NotesGroup.objects.create(title="New group", description="write a description....", user_id=user_id).save()
+    return redirect('notes_groups')
 
-class NotesView(View):
+@login_required
+@require_POST
+def updateGroup(request: HttpRequest, group_id):
+    group = NotesGroup.objects.get(pk=group_id)
+    group.description = request.POST['description']
+    group.save()
+    return redirect('notes_groups')
 
-    @method_decorator(login_required)
-    @method_decorator(require_GET)
-    def get(self, request, group_id):
+@login_required
+@require_POST
+def deleteGroup(request: HttpRequest, group_id):
+    NotesGroup.objects.get(pk=group_id).delete()
+    return redirect('notes_groups')
+# END NOTE_GROUPS
 
-        notesGroup = NotesGroup.objects.filter(id=group_id)[0]
-        notes = Note.objects.filter(notes_group_id=group_id)
 
-        return render(request, 'notes.html', {
-            'notes_group': notesGroup,
-            'notes_list': notes
-        })
-     
-    
+# NOTES    
+@login_required
+@require_GET
+def notes(request, group_id):
+    notesGroup = NotesGroup.objects.filter(id=group_id)[0]
+    notes = Note.objects.filter(notes_group_id=group_id)
+
+    return render(request, 'notes.html', {
+        'notes_group': notesGroup,
+        'notes_list': notes
+    })      
+
+@login_required
+@require_POST
+def createNote(request: HttpRequest, group_id):
+    Note.objects.create(title='Write title', content='Write content', notes_group_id=group_id).save()
+    return redirect(reverse('notes', args=(group_id,)))
+
+  
 @login_required
 @require_POST 
 def updateNote(request: HttpRequest, note_id):
@@ -100,3 +130,13 @@ def updateNote(request: HttpRequest, note_id):
     note.content = request.POST['card_content']
     note.save()
     return redirect(reverse('notes', args=(note.notes_group_id,)))
+
+
+@login_required
+@require_POST
+def deleteNote(request: HttpRequest, note_id):
+    note = Note.objects.get(pk=note_id)
+    note_id = note.notes_group_id
+    note.delete()
+    return redirect(reverse('notes', args=(note_id,)))
+# END NOTES

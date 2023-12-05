@@ -3,28 +3,50 @@
 
 
 <div class="container">
-    <h1>{{ notes_group.title }}</h1>
+    <h1 class="text-center">{{ notes_group.title }}</h1>
+    <form action={% url 'note_create' notes_group.id %} method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-success">+</button>
+    </form>
+    
 
-    <p>Description: {{ notes_group.description }}</p>
-
-    <ul class="list-group">
+    <div class="d-flex flex-wrap">
         {% for notes in notes_list %}
-        <li id="{{ notes.id }}" class="list-group-item">
-            <h4><a class="text-decoration-none" href="#">{{ notes.title }}</a></h4>
-            <form action={% url 'note_update' notes.id %} method="post">
-                {% csrf_token %}
-                <textarea name="card_content">{{ notes.content }}</textarea>
-                <button></button>
-            </form>
-            
-        </li>
-        {% endfor %}
-    </ul>
+                <div class="card m-5" style="width: 18em;">
+                    <div class="card-header">
+                        <h4>{{ notes.title }}</h4>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_note_modal"></button>
 
+                        <div class="modal fade" id="delete_note_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Advertencia!</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Está a punto de eliminar permanentemente la nota <strong>{{ notes_group.title }}</strong>!
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action={% url 'note_delete' notes.id %} method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <form id="{{ notes.id }}" action={% url 'note_update' notes.id %} method="post">
+                        {% csrf_token %}
+                        <textarea style="resize: none;" onchange="document.getElementById({{ notes.id }}).submit()" name="card_content">{{ notes.content }}</textarea>
+                    </form>
+                </div>
+        {% endfor %}
+    </div>
 </div>
 
-<script>
-    
-</script>
 
 {% endblock %}
