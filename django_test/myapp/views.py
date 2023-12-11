@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpRequest
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.views import View
@@ -100,7 +100,8 @@ def updateGroup(request: HttpRequest, group_id):
 @login_required
 @require_POST
 def deleteGroup(request: HttpRequest, group_id):
-    NotesGroup.objects.get(pk=group_id).delete()
+    group = get_object_or_404(NotesGroup, pk=group_id)
+    group.delete()
     return redirect('notes_groups')
 # END NOTE_GROUPS
 
@@ -109,25 +110,31 @@ def deleteGroup(request: HttpRequest, group_id):
 @login_required
 @require_GET
 def notes(request, group_id):
-    notesGroup = NotesGroup.objects.filter(id=group_id)[0]
+    notesGroup = get_list_or_404(NotesGroup, id=group_id)[0]
     notes = Note.objects.filter(notes_group_id=group_id)
 
     return render(request, 'notes.html', {
         'notes_group': notesGroup,
         'notes_list': notes
-    })      
+    })
+    
+@login_required
+@require_GET
+def favouriteNotes(request: HttpRequest, user_id):
+    notes = get_list_or_404(Note, favourite=True, notes_group_id__user_id=user_id)
+    return render(request, 'static_notes.html', {'notes': notes})
+    
 
 @login_required
 @require_POST
 def createNote(request: HttpRequest, group_id):
     Note.objects.create(title='Write title', content='Write content', notes_group_id=group_id).save()
     return redirect(reverse('notes', args=(group_id,)))
-
   
 @login_required
 @require_POST 
 def updateNoteTitle(request: HttpRequest, note_id):
-    note = Note.objects.get(pk=note_id)
+    note = get_object_or_404(Note, pk=note_id)
     note.title = request.POST['title']
     note.save()
     return redirect(reverse('notes', args=(note.notes_group_id,)))
@@ -135,8 +142,16 @@ def updateNoteTitle(request: HttpRequest, note_id):
 @login_required
 @require_POST 
 def updateNoteDescription(request: HttpRequest, note_id):
-    note = Note.objects.get(pk=note_id)
+    note = get_object_or_404(Note, pk=note_id)
     note.content = request.POST['description']
+    note.save()
+    return redirect(reverse('notes', args=(note.notes_group_id,)))
+
+@login_required
+@require_POST
+def updateNoteFavourite(request: HttpRequest, note_id):
+    note = get_object_or_404(Note, pk=note_id)
+    note.favourite = request.POST['favourite']
     note.save()
     return redirect(reverse('notes', args=(note.notes_group_id,)))
 
@@ -144,8 +159,10 @@ def updateNoteDescription(request: HttpRequest, note_id):
 @login_required
 @require_POST
 def deleteNote(request: HttpRequest, note_id):
-    note = Note.objects.get(pk=note_id)
+    note = get_object_or_404(Note, pk=note_id)
     note_id = note.notes_group_id
     note.delete()
     return redirect(reverse('notes', args=(note_id,)))
+
+
 # END NOTES
