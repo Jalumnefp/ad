@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpRequest
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.views import View
@@ -85,13 +85,14 @@ def notesGroups(request: HttpRequest):
 @login_required
 @require_POST
 def createGroup(request: HttpRequest, user_id):
-    NotesGroup.objects.create(title="New group", description="write a description....", user_id=user_id).save()
+    NotesGroup.objects.create(title=request.POST['title'], description=request.POST['description'], user_id=user_id).save()
     return redirect('notes_groups')
 
 @login_required
 @require_POST
 def updateGroup(request: HttpRequest, group_id):
     group = NotesGroup.objects.get(pk=group_id)
+    group.title = request.POST['title']
     group.description = request.POST['description']
     group.save()
     return redirect('notes_groups')
@@ -125,9 +126,17 @@ def createNote(request: HttpRequest, group_id):
   
 @login_required
 @require_POST 
-def updateNote(request: HttpRequest, note_id):
+def updateNoteTitle(request: HttpRequest, note_id):
     note = Note.objects.get(pk=note_id)
-    note.content = request.POST['card_content']
+    note.title = request.POST['title']
+    note.save()
+    return redirect(reverse('notes', args=(note.notes_group_id,)))
+
+@login_required
+@require_POST 
+def updateNoteDescription(request: HttpRequest, note_id):
+    note = Note.objects.get(pk=note_id)
+    note.content = request.POST['description']
     note.save()
     return redirect(reverse('notes', args=(note.notes_group_id,)))
 

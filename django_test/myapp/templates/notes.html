@@ -3,31 +3,47 @@
 
 
 
-    <h1 class="text-center">{{ notes_group.title }}</h1>
-    <form action={% url 'note_create' notes_group.id %} method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-outline-success">+</button>
-    </form>
+    
 
 <div class="container">
 
+    <header class="d-flex flex-wrap justify-content-center">
+        <h1 class="text-center m-3">{{ notes_group.title }}</h1>
+        <form action={% url 'note_create' notes_group.id %} method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-success m-4">
+                Create note  
+                <i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+                        <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5"/>
+                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+                    </svg>
+                </i>
+            </button>
+        </form>
+    </header>
+
     <div class="d-flex flex-wrap justify-content-center">
-        {% for notes in notes_list %}
+        {% for note in notes_list %}
                 <div class="card m-5" style="width: 20%;">
                     <div class="card-header d-flex space-between">
-                        <h4 class="flex-grow-1">{{ notes.title }}</h4>
+                        <form id="form-update-title-{{ note.id }}" action={% url 'note_update_title' note.id %} method="post">
+                            {% csrf_token %}
+                            <input id="" type="text" class="form-control fs-5 fw-bold" style="border: 0px; background-color: transparent;" name="title"  value={{ note.title }}  onchange="document.getElementById('form-update-title-{{ note.id }}').submit()">
+                        </form>
+
                         <button type="button" class="btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
                                 <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
                             </svg>
                         </button>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_note_modal">
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_note_modal{{ note.id }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                 <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                             </svg>
                         </button>
 
-                        <div class="modal fade" id="delete_note_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="delete_note_modal{{ note.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -35,11 +51,11 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Está a punto de eliminar permanentemente la nota <strong>{{ notes_group.title }}</strong>!
+                                        Está a punto de eliminar permanentemente la nota <strong>{{ note.title }}</strong>!
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <form action={% url 'note_delete' notes.id %} method="post">
+                                        <form action={% url 'note_delete' note.id %} method="post">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-danger">Eliminar</button>
                                         </form>
@@ -49,10 +65,13 @@
                         </div>
 
                     </div>
-                    <form id="{{ notes.id }}" action={% url 'note_update' notes.id %} method="post">
-                        {% csrf_token %}
-                        <textarea style="resize: none;" onchange="document.getElementById({{ notes.id }}).submit()" name="card_content">{{ notes.content }}</textarea>
-                    </form>
+                    <div class="card-body">
+                        <form id="form-update-descr-{{ note.id }}" action={% url 'note_update_descr' note.id %} method="post">
+                            {% csrf_token %}
+                            <textarea class="form-control" style="resize: none; border: 0px;" onchange="document.getElementById('form-update-descr-{{ note.id }}').submit()" name="description" cols="auto" rows="6">{{ note.content }}</textarea>
+                        </form>
+                    </div>
+                    
                 </div>
         {% endfor %}
     </div>
