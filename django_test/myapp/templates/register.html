@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container">
-    <div class="row col-3 align-center">
-        <form action={% url 'register' %} method="post">
+<div class="container py-5">
+    <div class="row py-lg-5">
+        <form action={% url 'register' %} method="post" class="col-lg-6 col-md-8 mx-auto">
 
             {% csrf_token %}
         
@@ -33,7 +33,7 @@
                 <label for="password_re_input">Repetir contraseña</label>
             </div>
         
-            <button type="submit" class="btn btn-outline-primary">Registrar</button>
+            <button type="submit" class="btn btn-outline-primary form-control">Registrar</button>
         
         </form>
 

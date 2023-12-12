@@ -19,6 +19,7 @@ class Note(models.Model):
     content = models.TextField()
     notes_group = models.ForeignKey(NotesGroup, on_delete=models.CASCADE)
     favourite = models.BooleanField(default=False)
+    public = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.title

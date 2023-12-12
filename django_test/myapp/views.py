@@ -65,8 +65,9 @@ class RegisterView(View):
             email = request.POST['email'],
             password = request.POST['password']
         ).save()
-    
 
+    
+@login_required
 @require_GET
 def close_session(request):
     logout(request)
@@ -91,7 +92,7 @@ def createGroup(request: HttpRequest, user_id):
 @login_required
 @require_POST
 def updateGroup(request: HttpRequest, group_id):
-    group = NotesGroup.objects.get(pk=group_id)
+    group = get_object_or_404(NotesGroup, pk=group_id)
     group.title = request.POST['title']
     group.description = request.POST['description']
     group.save()
@@ -121,8 +122,15 @@ def notes(request, group_id):
 @login_required
 @require_GET
 def favouriteNotes(request: HttpRequest, user_id):
-    notes = get_list_or_404(Note, favourite=True, notes_group_id__user_id=user_id)
-    return render(request, 'static_notes.html', {'notes': notes})
+    notes = Note.objects.filter(favourite=True, notes_group_id__user_id=user_id)
+    return render(request, 'static_notes.html', {'notes': notes, 'context': 'favoutite_notes'})
+
+@login_required
+@require_GET
+def publicNotes(request: HttpRequest):
+    notes = Note.objects.filter(public=True)
+    
+    return render(request, 'static_notes.html', {'notes': notes, 'context': 'public_notes'})
     
 
 @login_required
@@ -130,6 +138,20 @@ def favouriteNotes(request: HttpRequest, user_id):
 def createNote(request: HttpRequest, group_id):
     Note.objects.create(title='Write title', content='Write content', notes_group_id=group_id).save()
     return redirect(reverse('notes', args=(group_id,)))
+
+
+
+
+@login_required
+@require_POST 
+def updateNoteField(request: HttpRequest, note_id, field_name):
+    note = get_object_or_404(Note, pk=note_id)
+    note.title = request.POST['title']
+    note.save()
+    return redirect(reverse('notes', args=(note.notes_group_id,)))
+
+
+
   
 @login_required
 @require_POST 
@@ -152,6 +174,14 @@ def updateNoteDescription(request: HttpRequest, note_id):
 def updateNoteFavourite(request: HttpRequest, note_id):
     note = get_object_or_404(Note, pk=note_id)
     note.favourite = request.POST['favourite']
+    note.save()
+    return redirect(reverse('notes', args=(note.notes_group_id,)))
+
+@login_required
+@require_POST
+def updateNotePublic(request: HttpRequest, note_id):
+    note = get_object_or_404(Note, pk=note_id)
+    note.public = request.POST['public']
     note.save()
     return redirect(reverse('notes', args=(note.notes_group_id,)))
 

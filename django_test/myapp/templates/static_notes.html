@@ -5,19 +5,22 @@
 <div class="container">
 
     <header class="d-flex flex-wrap justify-content-center">
-        <h1 class="text-center m-3">Tus notas preferidas</h1>
-        
+        {% if context == 'public_notes' %}
+            <h1 class="text-center m-3">Notas publicadas</h1>
+        {% else %}
+            <h1 class="text-center m-3">Tus notas preferidas</h1>
+        {% endif %}
     </header>
 
     <div class="d-flex flex-wrap justify-content-center">
         {% for note in notes %}
                 <div class="card m-5" style="width: 20%;">
-                    <div class="card-header d-flex">
-                        <h5>{{ note.title }}</h5>
-                        <p>{{ note.notes_group_id }}</p>
+                    <div class="card-header d-flex flex-wrap">
+                        <input disabled type="text" style="background-color: transparent;" class="form-control border-0" value={{ note.title }}>
+                        <input disabled type="text" style="background-color: transparent;" class="form-control border-0"  value="{% if context == 'public_notes' %}De: {{ note.notes_group.user.username }}{% else %}Grupo: {{ note.notes_group.title }}{% endif %}">
                     </div>
                     <div class="card-body">
-                        <p>{{ note.content }}</p>
+                        <textarea disabled style="background-color: transparent;resize: none" cols="auto" rows="6" class="form-control border-0">{{ note.content }}</textarea>
                     </div>
                     
                 </div>
