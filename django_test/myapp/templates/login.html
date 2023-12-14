@@ -17,6 +17,10 @@
             </div>
         
             <button type="submit" class="btn btn-outline-primary form-control">Iniciar sesión</button>
+
+            {% if error %}
+                <p class="text-danger">{{ error }}</p>
+            {% endif %}
         
         </form>
 

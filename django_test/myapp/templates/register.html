@@ -33,7 +33,11 @@
                 <label for="password_re_input">Repetir contraseña</label>
             </div>
         
-            <button type="submit" class="btn btn-outline-primary form-control">Registrar</button>
+            <button type="submit" class="btn btn-outline-primary form-control">Registrarse</button>
+
+            {% if error %}
+                <p class="text-danger">{{ error }}</p>
+            {% endif %}
         
         </form>
 

@@ -41,9 +41,7 @@ class LoginView(View):
             login(request, user_auth)
             return redirect('notes_groups')
         else:
-            return render(request, 'login.html', {
-                'credentials_error': 'Credenciales erroneas'
-            })
+            return render(request, 'login.html', {'error': 'ERROR'})
       
 class RegisterView(View):
     
@@ -53,18 +51,24 @@ class RegisterView(View):
     
     @method_decorator(require_POST)
     def post(self, request):
-        self._add_user(request)
-        return render(request, 'login.html')
+        error = self._add_user(request)
+        if not error:
+            return render(request, 'login.html')
+        else:
+            return render(request, 'register.html', {'error': error})
     
     @classmethod
     def _add_user(self, request):
-        User.objects.create_user(
-            username = request.POST['username'],
-            first_name = request.POST['firstname'],
-            last_name = request.POST['surname'],
-            email = request.POST['email'],
-            password = request.POST['password']
-        ).save()
+        try:
+            User.objects.create_user(
+                username = request.POST['username'],
+                first_name = request.POST['firstname'],
+                last_name = request.POST['surname'],
+                email = request.POST['email'],
+                password = request.POST['password']
+            ).save()
+        except Exception as e:
+            return e
 
     
 @login_required
@@ -139,49 +143,18 @@ def createNote(request: HttpRequest, group_id):
     Note.objects.create(title='Write title', content='Write content', notes_group_id=group_id).save()
     return redirect(reverse('notes', args=(group_id,)))
 
-
-
-
-@login_required
-@require_POST 
-def updateNoteField(request: HttpRequest, note_id, field_name):
-    note = get_object_or_404(Note, pk=note_id)
-    note.title = request.POST['title']
-    note.save()
-    return redirect(reverse('notes', args=(note.notes_group_id,)))
-
-
-
-  
-@login_required
-@require_POST 
-def updateNoteTitle(request: HttpRequest, note_id):
-    note = get_object_or_404(Note, pk=note_id)
-    note.title = request.POST['title']
-    note.save()
-    return redirect(reverse('notes', args=(note.notes_group_id,)))
-
-@login_required
-@require_POST 
-def updateNoteDescription(request: HttpRequest, note_id):
-    note = get_object_or_404(Note, pk=note_id)
-    note.content = request.POST['description']
-    note.save()
-    return redirect(reverse('notes', args=(note.notes_group_id,)))
-
 @login_required
 @require_POST
-def updateNoteFavourite(request: HttpRequest, note_id):
+def updateNote(request, note_id, field_name):
     note = get_object_or_404(Note, pk=note_id)
-    note.favourite = request.POST['favourite']
-    note.save()
-    return redirect(reverse('notes', args=(note.notes_group_id,)))
-
-@login_required
-@require_POST
-def updateNotePublic(request: HttpRequest, note_id):
-    note = get_object_or_404(Note, pk=note_id)
-    note.public = request.POST['public']
+    if field_name == 'title':
+        note.title = request.POST['title']
+    elif field_name == 'content':
+        note.content = request.POST['content']
+    elif field_name == 'favourite':
+        note.favourite = request.POST['favourite']
+    elif field_name == 'public':
+        note.public = request.POST['public']
     note.save()
     return redirect(reverse('notes', args=(note.notes_group_id,)))
 
@@ -193,6 +166,5 @@ def deleteNote(request: HttpRequest, note_id):
     note_id = note.notes_group_id
     note.delete()
     return redirect(reverse('notes', args=(note_id,)))
-
 
 # END NOTES

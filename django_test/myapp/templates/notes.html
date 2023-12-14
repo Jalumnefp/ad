@@ -9,7 +9,7 @@
 
     <header class="d-flex flex-wrap justify-content-center">
         <h1 class="text-center m-3">{{ notes_group.title }}</h1>
-        <form action={% url 'note_create' notes_group.id %} method="post">
+        <form action='/myapp/notes/{{ notes_group.id }}/create' method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-success m-4">
                 Create note  
@@ -27,12 +27,12 @@
         {% for note in notes_list %}
                 <div class="card m-5">
                     <div class="card-header d-flex space-between">
-                        <form id="form-update-title-{{ note.id }}" action={% url 'note_update_title' note.id %} method="post">
+                        <form id="form-update-title-{{ note.id }}" action='/myapp/notes/{{ note.id }}/update/title' method="post">
                             {% csrf_token %}
                             <input id="" type="text" class="form-control fs-5 fw-bold" style="border: 0px; background-color: transparent;" name="title"  value="{{ note.title }}"  onchange="document.getElementById('form-update-title-{{ note.id }}').submit()">
                         </form>
 
-                        <form action={% url 'note_update_public' note.id %} method="post">
+                        <form action='/myapp/notes/{{ note.id }}/update/public' method="post">
                             {% csrf_token %}
                             <input hidden="true" type="text" name="public" value={% if note.public %}'False'{% else %}'True'{% endif %}>
                             <button type="submit" class="mt-2" style="border: 0px;background-color: transparent;">
@@ -51,7 +51,7 @@
                             </button>
                         </form>
 
-                        <form action={% url 'note_update_fav' note.id %} method="post">
+                        <form action='/myapp/notes/{{ note.id }}/update/favourite' method="post">
                             {% csrf_token %}
                             <input hidden="true" type="text" name="favourite" value={% if note.favourite %}'False'{% else %}'True'{% endif %}>
                             <button type="submit" class="mt-2" style="border: 0px;background-color: transparent;">
@@ -100,9 +100,9 @@
 
                     </div>
                     <div class="card-body">
-                        <form id="form-update-descr-{{ note.id }}" action={% url 'note_update_descr' note.id %} method="post">
+                        <form id="form-update-descr-{{ note.id }}" action='/myapp/notes/{{ note.id }}/update/content' method="post">
                             {% csrf_token %}
-                            <textarea class="form-control" style="resize: none; border: 0px;" onchange="document.getElementById('form-update-descr-{{ note.id }}').submit()" name="description" cols="auto" rows="6">{{ note.content }}</textarea>
+                            <textarea class="form-control" style="resize: none; border: 0px;" onchange="document.getElementById('form-update-descr-{{ note.id }}').submit()" name="content" cols="auto" rows="6">{{ note.content }}</textarea>
                         </form>
                     </div>
                     
